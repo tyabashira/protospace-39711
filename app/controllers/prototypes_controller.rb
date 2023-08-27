@@ -1,12 +1,16 @@
 class PrototypesController < ApplicationController
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :move_to_index, except: [:index, :show]
+  before_action :move_to_index, except: [:index, :show, :new, :edit]
 def index
   @prototypes = Prototype.all
 end
 
 def new
+  if user_signed_in?
   @prototype = Prototype.new
+  else
+    redirect_to new_user_session_path
+  end
 end
 
 def create
@@ -26,11 +30,16 @@ def show
 end
 
 def edit
-  @prototype = Prototype.find(params[:id])
-  if @prototype.user != current_user
-    redirect_to root_path
-    return
+  if user_signed_in?
+    @prototype = Prototype.find(params[:id])
+    if @prototype.user != current_user
+      redirect_to root_path
+      return
+    end
+  else
+    redirect_to  new_user_session_path
   end
+
 end
 
 def update
@@ -43,7 +52,7 @@ def update
       render :edit, status: :unprocessable_entity
     end
   else
-    redirect_to root_path
+    redirect_to new_prototype_path
   end
 end
 
