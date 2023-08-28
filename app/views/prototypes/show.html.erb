@@ -4,15 +4,19 @@
       <p class="prototype__hedding">
       <%= @prototype.title %>
       </p>
-        <% if user_signed_in? %>
+        
       <%= link_to @prototype.user.username, user_path(@prototype.user_id), class: :prototype__user %>
+           <% if user_signed_in? && current_user.id == @prototype.user_id %>
       <%# プロトタイプの投稿者とログインしているユーザーが同じであれば以下を表示する %>
         <div class="prototype__manage">
           <%= link_to "編集する", edit_prototype_path(@prototype.id), class: :prototype__btn %>
           <%= link_to "削除する", prototype_path(@prototype.id), data: { turbo_method: :delete }, class: :prototype__btn %>
         </div>
-         <% else %>
-       <% end %>
+          <% else %>
+        <% end %>
+       
+
+
       <%# // プロトタイプの投稿者とログインしているユーザーが同じであれば上記を表示する %>
       <div class="prototype__image">
         <%= image_tag @prototype.image %>
